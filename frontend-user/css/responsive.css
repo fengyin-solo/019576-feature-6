@@ -169,7 +169,11 @@
     .guide-content {
         padding: var(--spacing-md);
     }
-    
+
+    .guide-tooltip-inner {
+        padding: var(--spacing-md);
+    }
+
     .guide-icon {
         font-size: 36px;
     }

@@ -173,7 +173,7 @@ class InteractionManager {
     
     bindHelpEvents() {
         document.getElementById('btn-help').addEventListener('click', () => {
-            Storage.resetGuide();
+            // 不清除引导进度：未完成时续走上次步骤，已完成时从头复习
             window.dispatchEvent(new CustomEvent('showGuide'));
         });
         

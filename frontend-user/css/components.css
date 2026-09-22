@@ -677,7 +677,7 @@
     }
 }
 
-/* 引导遮罩 */
+/* 引导层 */
 .guide-overlay {
     position: fixed;
     top: 0;
@@ -690,6 +690,121 @@
     justify-content: center;
     z-index: 2000;
     padding: var(--spacing-md);
+}
+
+/* 高亮步骤模式：暗化由四块遮罩承担，容器自身透明；
+   容器不拦截事件，高亮区域内的点击可穿透到真实界面 */
+.guide-overlay.step-mode {
+    display: block;
+    padding: 0;
+    background-color: transparent;
+    pointer-events: none;
+}
+
+.guide-overlay.step-mode .guide-mask,
+.guide-overlay.step-mode .guide-tooltip {
+    pointer-events: auto;
+}
+
+.guide-mask {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: left var(--transition-normal), top var(--transition-normal),
+        width var(--transition-normal), height var(--transition-normal);
+}
+
+/* 高亮框 */
+.guide-spotlight {
+    position: absolute;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.35);
+    pointer-events: none;
+    animation: guidePulse 1.6s ease-in-out infinite;
+    transition: left var(--transition-normal), top var(--transition-normal),
+        width var(--transition-normal), height var(--transition-normal);
+}
+
+@keyframes guidePulse {
+    0%, 100% {
+        box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.35);
+    }
+    50% {
+        box-shadow: 0 0 0 9px rgba(74, 144, 226, 0.12);
+    }
+}
+
+/* 步骤说明气泡 */
+.guide-tooltip {
+    position: absolute;
+    width: 320px;
+    max-width: calc(100vw - 16px);
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 2001;
+    transition: left var(--transition-normal), top var(--transition-normal);
+}
+
+.guide-tooltip-inner {
+    padding: var(--spacing-lg);
+    /* 内容过高时内部滚动，保证说明完整可读完 */
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
+}
+
+.guide-tooltip-arrow {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-bg-card);
+    transform: rotate(45deg);
+}
+
+.guide-tooltip[data-arrow="right"] .guide-tooltip-arrow {
+    left: -6px;
+}
+
+.guide-tooltip[data-arrow="left"] .guide-tooltip-arrow {
+    right: -6px;
+}
+
+.guide-tooltip[data-arrow="bottom"] .guide-tooltip-arrow {
+    top: -6px;
+}
+
+.guide-tooltip[data-arrow="top"] .guide-tooltip-arrow {
+    bottom: -6px;
+}
+
+.guide-tooltip[data-arrow="none"] .guide-tooltip-arrow {
+    display: none;
+}
+
+.guide-step-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.guide-step-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.guide-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.guide-actions-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .guide-modal {
@@ -744,31 +859,10 @@
     padding: var(--spacing-xs) 0;
 }
 
-.guide-step {
-    text-align: center;
-}
-
 .guide-step-num {
     font-size: var(--font-size-xs);
     color: var(--color-text-hint);
     margin-bottom: var(--spacing-sm);
-}
-
-.guide-step h3 {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-md);
-}
-
-.guide-step p {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-md);
-}
-
-.guide-step strong {
-    color: var(--color-primary);
 }
 
 .guide-hint {
