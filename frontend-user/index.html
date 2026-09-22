@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <!-- 欢迎引导遮罩 -->
+    <!-- 欢迎引导遮罩（仅首次进入显示） -->
     <div id="guide-overlay" class="guide-overlay hidden">
         <div class="guide-modal">
             <div class="guide-content">
@@ -111,48 +111,43 @@
                     <div class="guide-icon">🔬</div>
                     <h2>欢迎来到光学设计实验室</h2>
                     <p class="guide-subtitle">探索透镜如何改变光的传播</p>
-                    <p class="guide-desc">在这里，你可以：</p>
+                    <p class="guide-desc">接下来我们将带你依次认识三个区域：</p>
                     <ul class="guide-list">
-                        <li>🔍 添加不同类型的透镜</li>
-                        <li>⚙️ 调节透镜参数</li>
-                        <li>✨ 观察光路变化</li>
+                        <li>🔍 左侧素材库：添加不同类型的透镜</li>
+                        <li>🎨 中间画布：摆放透镜、观察光路</li>
+                        <li>⚙️ 右侧参数面板：调节透镜参数</li>
                     </ul>
+                    <p class="guide-desc guide-tip-note">跟着高亮提示实际操作，随时可以退出，下次会从这一步继续。</p>
                     <button class="btn btn-primary" id="btn-start-guide">开始学习</button>
                     <button class="btn btn-text" id="btn-skip-guide">跳过引导</button>
                 </div>
-                
-                <div class="guide-step hidden" id="guide-step-1">
-                    <div class="guide-step-num">1/3</div>
-                    <h3>添加透镜</h3>
-                    <p>从左侧素材库中，拖拽一个<strong>凸透镜</strong>到画布上</p>
-                    <div class="guide-hint">
-                        <span class="hint-icon">💡</span>
-                        <span>凸透镜可以让光线汇聚到一点</span>
-                    </div>
-                    <button class="btn btn-primary" id="btn-step-1-next">我知道了</button>
-                </div>
-                
-                <div class="guide-step hidden" id="guide-step-2">
-                    <div class="guide-step-num">2/3</div>
-                    <h3>调节参数</h3>
-                    <p>点击画布上的透镜，在右侧面板调节<strong>折射率</strong></p>
-                    <div class="guide-hint">
-                        <span class="hint-icon">💡</span>
-                        <span>折射率越大，光偏折越明显</span>
-                    </div>
-                    <button class="btn btn-primary" id="btn-step-2-next">我知道了</button>
-                </div>
-                
-                <div class="guide-step hidden" id="guide-step-3">
-                    <div class="guide-step-num">3/3</div>
-                    <h3>查看光路</h3>
-                    <p>点击<strong>启动光路</strong>按钮，观察光线如何穿过透镜</p>
-                    <div class="guide-hint">
-                        <span class="hint-icon">💡</span>
-                        <span>红色是入射光，蓝色是折射光</span>
-                    </div>
-                    <button class="btn btn-primary" id="btn-finish-guide">开始探索</button>
-                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实景步骤引导：聚光高亮 + 跟随气泡 -->
+    <div id="guide-tour" class="guide-tour hidden" aria-live="polite">
+        <div class="guide-tour-dim" id="guide-tour-dim"></div>
+        <div class="guide-tour-spotlight" id="guide-tour-spotlight"></div>
+        <div class="guide-tour-popover" id="guide-tour-popover" role="dialog" aria-label="引导步骤">
+            <button class="guide-tour-close" id="btn-exit-tour" title="退出引导（稍后从这一步继续）" aria-label="退出引导">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="guide-tour-step-num" id="tour-step-num">1/3</div>
+            <h3 class="guide-tour-title" id="tour-step-title"></h3>
+            <div class="guide-tour-desc" id="tour-step-desc"></div>
+            <div class="guide-tour-hint" id="tour-step-hint">
+                <span class="hint-icon">💡</span>
+                <span id="tour-step-hint-text"></span>
+            </div>
+            <div class="guide-tour-action hidden" id="tour-step-action"></div>
+            <div class="guide-tour-status" id="tour-step-status"></div>
+            <div class="guide-tour-footer">
+                <button class="btn btn-text" id="btn-tour-exit">稍后再看</button>
+                <button class="btn btn-primary" id="btn-tour-next" disabled>下一步</button>
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ class App {
         this.interactionManager = new InteractionManager(this.canvasManager);
         
         // 初始化引导系统
-        this.guideManager = new GuideManager();
+        this.guideManager = new GuideManager(this.canvasManager);
         
         // 初始化测验管理器
         this.quizManager = new QuizManager(this.canvasManager);

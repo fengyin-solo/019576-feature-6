@@ -169,13 +169,18 @@
     .guide-content {
         padding: var(--spacing-md);
     }
-    
+
     .guide-icon {
         font-size: 36px;
     }
-    
+
     .guide-welcome h2 {
         font-size: var(--font-size-lg);
+    }
+
+    /* 实景引导气泡在窄屏占满宽度，保证说明完整呈现 */
+    .guide-tour-popover {
+        width: calc(100vw - 20px);
     }
     
     /* Toast位置调整 */

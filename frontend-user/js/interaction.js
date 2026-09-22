@@ -45,6 +45,7 @@ class InteractionManager {
                     });
                     this.canvasManager.addLens(lens);
                     this.canvasManager.selectLens(lens);
+                    window.dispatchEvent(new CustomEvent('lensAdded', { detail: lens }));
                     Utils.showToast('透镜已添加', 'success');
                 });
             }
@@ -57,6 +58,7 @@ class InteractionManager {
         this.btnToggleLight.addEventListener('click', () => {
             const isRunning = this.renderer.toggleRunning();
             this.updateLightButtonState(isRunning);
+            window.dispatchEvent(new CustomEvent('lightToggled', { detail: { running: isRunning } }));
         });
         
         // 重置画布
@@ -111,42 +113,46 @@ class InteractionManager {
         riSlider.addEventListener('input', (e) => {
             const value = parseFloat(e.target.value);
             document.getElementById('param-ri-value').textContent = value.toFixed(2);
-            
+
             if (this.canvasManager.selectedLens) {
                 this.canvasManager.selectedLens.refractiveIndex = value;
                 this.renderer.render();
+                window.dispatchEvent(new CustomEvent('lensParamChanged', { detail: { param: 'refractiveIndex', value } }));
             }
         });
-        
+
         const sizeSlider = document.getElementById('param-size');
         sizeSlider.addEventListener('input', (e) => {
             const value = parseInt(e.target.value);
             document.getElementById('param-size-value').textContent = `${value}%`;
-            
+
             if (this.canvasManager.selectedLens) {
                 this.canvasManager.selectedLens.size = value;
                 this.renderer.render();
+                window.dispatchEvent(new CustomEvent('lensParamChanged', { detail: { param: 'size', value } }));
             }
         });
-        
+
         const curvatureSlider = document.getElementById('param-curvature');
         curvatureSlider.addEventListener('input', (e) => {
             const value = parseInt(e.target.value);
             document.getElementById('param-curvature-value').textContent = `${value}%`;
-            
+
             if (this.canvasManager.selectedLens) {
                 this.canvasManager.selectedLens.curvature = value;
                 this.renderer.render();
+                window.dispatchEvent(new CustomEvent('lensParamChanged', { detail: { param: 'curvature', value } }));
             }
         });
-        
+
         document.getElementById('param-material').addEventListener('change', (e) => {
             if (this.canvasManager.selectedLens) {
                 this.canvasManager.selectedLens.applyMaterial(e.target.value);
                 riSlider.value = this.canvasManager.selectedLens.refractiveIndex;
-                document.getElementById('param-ri-value').textContent = 
+                document.getElementById('param-ri-value').textContent =
                     this.canvasManager.selectedLens.refractiveIndex.toFixed(2);
                 this.renderer.render();
+                window.dispatchEvent(new CustomEvent('lensParamChanged', { detail: { param: 'material', value: e.target.value } }));
             }
         });
         
@@ -173,7 +179,7 @@ class InteractionManager {
     
     bindHelpEvents() {
         document.getElementById('btn-help').addEventListener('click', () => {
-            Storage.resetGuide();
+            // 打开引导：未完成则回到上次步骤，已完成则从欢迎页重新回顾
             window.dispatchEvent(new CustomEvent('showGuide'));
         });
         

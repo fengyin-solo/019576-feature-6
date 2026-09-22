@@ -677,7 +677,7 @@
     }
 }
 
-/* 引导遮罩 */
+/* 欢迎引导遮罩 */
 .guide-overlay {
     position: fixed;
     top: 0;
@@ -698,7 +698,8 @@
     box-shadow: var(--shadow-lg);
     width: 100%;
     max-width: 420px;
-    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .guide-content {
@@ -733,6 +734,11 @@
     margin-bottom: var(--spacing-sm);
 }
 
+.guide-tip-note {
+    color: var(--color-text-hint);
+    font-size: var(--font-size-xs);
+}
+
 .guide-list {
     text-align: left;
     margin-bottom: var(--spacing-lg);
@@ -744,51 +750,206 @@
     padding: var(--spacing-xs) 0;
 }
 
-.guide-step {
-    text-align: center;
+/* ===== 实景步骤引导 ===== */
+.guide-tour {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    /* 整层不拦截事件，保证高亮区域可直接操作（拖拽、点击、滑动滑块） */
+    pointer-events: none;
 }
 
-.guide-step-num {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-hint);
-    margin-bottom: var(--spacing-sm);
+/* 半透明遮罩底：聚光框自身的投影会在其四周压暗 */
+.guide-tour-dim {
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
 }
 
-.guide-step h3 {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-md);
+/* 聚光高亮框（挖空遮罩，跟随目标区域） */
+.guide-tour-spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.62),
+                0 0 20px 4px rgba(74, 144, 226, 0.55);
+    transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+    pointer-events: none;
+    animation: guideSpotlightPulse 1.8s ease-in-out infinite;
+    z-index: 1;
 }
 
-.guide-step p {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-md);
+@keyframes guideSpotlightPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.62),
+                    0 0 12px 2px rgba(74, 144, 226, 0.45);
+    }
+    50% {
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.62),
+                    0 0 26px 8px rgba(74, 144, 226, 0.75);
+    }
 }
 
-.guide-step strong {
-    color: var(--color-primary);
+/* 被引导指向的区域自身加强反馈 */
+.guide-target-active {
+    position: relative;
+    z-index: 2;
+    border-radius: var(--radius-md);
 }
 
-.guide-hint {
+/* 步骤说明气泡 */
+.guide-tour-popover {
+    position: absolute;
+    width: 320px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+    z-index: 3;
+    pointer-events: auto;
+    animation: guidePopoverIn 0.25s ease;
+}
+
+@keyframes guidePopoverIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.guide-tour-arrow {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: var(--color-bg-card);
+    transform: rotate(45deg);
+    border-radius: 2px;
+    z-index: -1;
+}
+
+.guide-tour-popover[data-side="bottom"] .guide-tour-arrow {
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.guide-tour-popover[data-side="top"] .guide-tour-arrow {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.guide-tour-popover[data-side="right"] .guide-tour-arrow {
+    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.guide-tour-popover[data-side="left"] .guide-tour-arrow {
+    box-shadow: 2px -2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.guide-tour-close {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-hint);
+    cursor: pointer;
+}
+
+.guide-tour-close:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.guide-tour-step-num {
+    display: inline-block;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.guide-tour-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+    padding-right: var(--spacing-lg);
+}
+
+.guide-tour-desc {
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    word-break: break-word;
+}
+
+.guide-tour-desc strong {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.guide-tour-hint {
+    display: flex;
+    align-items: flex-start;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     background-color: var(--color-primary-light);
     border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
 }
 
-.hint-icon {
-    font-size: var(--font-size-md);
-}
-
-.guide-hint span:last-child {
-    font-size: var(--font-size-sm);
+.guide-tour-hint span:last-child {
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
     color: var(--color-text-primary);
+}
+
+.guide-tour-action {
+    margin-bottom: var(--spacing-sm);
+}
+
+.guide-tour-action .btn {
+    width: 100%;
+}
+
+.guide-tour-status {
+    font-size: var(--font-size-xs);
+    color: var(--color-warning);
+    margin-bottom: var(--spacing-sm);
+}
+
+.guide-tour-status.is-done {
+    color: var(--color-success);
+    font-weight: var(--font-weight-bold);
+}
+
+.guide-tour-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-xs);
+}
+
+.guide-tour-footer .btn-primary {
+    min-width: 96px;
 }
 
 /* 测验模式样式 */

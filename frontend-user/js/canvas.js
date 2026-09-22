@@ -160,6 +160,7 @@ class CanvasManager {
         
         this.addLens(lens);
         this.selectLens(lens);
+        window.dispatchEvent(new CustomEvent('lensAdded', { detail: lens }));
         Utils.showToast('透镜已添加', 'success');
     }
     
